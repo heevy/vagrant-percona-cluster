@@ -1,0 +1,25 @@
+- name: Install the EPEL Yum repository
+  yum:
+    name: epel-release
+
+- name: Install the Percona Yum repository
+  yum:
+    name: "{{ pxc_release}}"
+
+- name: Install Percona packages
+  yum:
+    name: "{{ item }}"
+  with_items:
+    - "Percona-XtraDB-Cluster-{{ pxc_version|replace('.','') }}"
+    - percona-toolkit
+    - MySQL-python
+
+- name: Update mysql configuration file
+  template:
+    src: templates/my.cnf.j2
+    dest: /etc/my.cnf
+
+- name: Enable mysql service
+  service:
+    name: mysql
+    enabled: yes

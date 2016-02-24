@@ -1,0 +1,26 @@
+- name: Install libselinux-python package
+  yum:
+    name: libselinux-python
+
+- name: Create new LVM volume group
+  lvg:
+    vg: vg_data
+    pvs: /dev/sdb
+
+- name: Create new LVM logical volume
+  lvol:
+    vg: vg_data
+    lv: mysql
+    size: 90%FREE
+
+- name: Create new filesystem on new LVM logical volume
+  filesystem:
+    fstype: ext4
+    dev: /dev/vg_data/mysql
+
+- name: Mount new filesystem
+  mount:
+    name: /var/lib/mysql
+    src: /dev/vg_data/mysql
+    fstype: ext4
+    state: mounted

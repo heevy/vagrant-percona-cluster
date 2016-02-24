@@ -1,0 +1,33 @@
+# {{ ansible_managed }}
+
+{% set cluster_members = [] -%}
+
+{% for host in groups['percona_cluster'] -%}
+  {% set _ = cluster_members.append(hostvars[host]['ansible_eth1']['ipv4']['address']) -%}
+{% endfor -%}
+
+[mysqld]
+
+datadir=/var/lib/mysql
+user=mysql
+{# In order for Galera to work correctly binlog format should be ROW #}
+binlog_format=ROW
+{# MyISAM storage engine has only experimental support #}
+default_storage_engine=InnoDB
+{# This changes how InnoDB autoincrement locks are managed and is a requirement for Galera #}
+innodb_autoinc_lock_mode=2
+{# https://bugs.launchpad.net/percona-xtradb-cluster/+bug/1354413 #}
+innodb_log_file_size=64M
+
+{# Path to Galera library #}
+wsrep_provider=/usr/lib64/libgalera_smm.so
+{# Cluster connection URL contains the IPs of nodes #}
+wsrep_cluster_address=gcomm://{{ cluster_members|join(',') }}
+{# Node IP address #}
+wsrep_node_address={{ ansible_eth1.ipv4.address }}
+{# Cluster name #}
+wsrep_cluster_name=percona_cluster
+{# SST method #}
+wsrep_sst_method=xtrabackup-v2
+{# Authentication for SST method #}
+wsrep_sst_auth="sstuser:s3cret"
