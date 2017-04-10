@@ -1,6 +1,6 @@
 - hosts: pxc-node-1
   gather_facts: False
-  become: yes
+  sudo: yes
   tasks:
     - name: Bootstrap pxc-node-1
       shell: /etc/init.d/mysql bootstrap-pxc
@@ -14,7 +14,7 @@
 
 - hosts: pxc-node-2
   gather_facts: False
-  become: yes
+  sudo: yes
   tasks:
     - service:
         name: mysql
@@ -22,7 +22,7 @@
 
 - hosts: pxc-node-3
   gather_facts: False
-  become: yes
+  sudo: yes
   tasks:
     - service:
         name: mysql
@@ -30,7 +30,7 @@
 
 - hosts: pxc-node-1
   gather_facts: False
-  become: yes
+  sudo: yes
   tasks:
     - service:
         name: mysql
