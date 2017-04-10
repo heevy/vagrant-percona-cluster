@@ -23,7 +23,7 @@ Usage
 -----
 ```
 mysql -h172.28.128.3 -uroot -ppassword
-
+```
 
 Reference
 ---------
