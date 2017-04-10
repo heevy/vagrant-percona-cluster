@@ -1,0 +1,11 @@
+- hosts: pxc-node-1
+  gather_facts: False
+  tasks:
+
+    - name: Grant root access
+      mysql_user:
+        user: root
+        host: '%'
+        password: password
+        priv: '*.*:ALL,GRANT'
+        state: present
